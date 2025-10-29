@@ -102,7 +102,7 @@ public class Spawnelytra implements ModInitializer {
                                 CENTER_POS = null;
                                 saveConfig();
                                 context.getSource().sendFeedback(
-                                        () -> Text.literal("§aAlle Einstellungen auf Standardwerte zurückgesetzt!"),
+                                        () -> Text.literal("§aSettings reset!"),
                                         true
                                 );
                                 return 1;
@@ -156,8 +156,6 @@ public class Spawnelytra implements ModInitializer {
             boolean inSpawnRadius = distance <= START_RADIUS;
 
             if (playerSaver.getPlayer().isOnGround()) {
-                playerSaver.getPlayer().sendMessage(Text.literal("onGround"), true);
-
                 if (playerSaver.isFlying()) {
                     playerSaver.setFlying(false);
                     playerSaver.setGroundTicks(0);
@@ -177,7 +175,6 @@ public class Spawnelytra implements ModInitializer {
             } else {
 
                 if (playerSaver.getDoubleSpaceCounter() >= 4 && playerSaver.getPlayer().getPlayerInput().jump() && inSpawnRadius && playerSaver.getPlayer().getGameMode() == GameMode.SURVIVAL) {
-                    playerSaver.getPlayer().sendMessage(Text.literal("Press Space to boost"), true);
                     playerSaver.setDoubleSpaceCounter(0);
                     playerSaver.getPlayer().startGliding();
                     playerSaver.setFlying(true);
@@ -235,12 +232,12 @@ public class Spawnelytra implements ModInitializer {
                 } else {
                     CENTER_POS = null;
                 }
-                System.out.println("[Spawnelytra] Config geladen: Radius=" + START_RADIUS +
+                System.out.println("[Spawnelytra] Config loaded: Radius=" + START_RADIUS +
                         ", Boost=" + BOOST_MULTIPLIER + ", Center=" +
                         (CENTER_POS != null ? CENTER_POS.toShortString() : "World-Spawn"));
             }
         } catch (IOException e) {
-            System.err.println("[Spawnelytra] Fehler beim Laden der Config: " + e.getMessage());
+            System.err.println("[Spawnelytra] Error loading config: " + e.getMessage());
         }
     }
 
@@ -257,10 +254,10 @@ public class Spawnelytra implements ModInitializer {
                     config.centerZ = CENTER_POS.getZ();
                 }
                 GSON.toJson(config, writer);
-                System.out.println("[Spawnelytra] Config gespeichert");
+                System.out.println("[Spawnelytra] Config saved");
             }
         } catch (IOException e) {
-            System.err.println("[Spawnelytra] Fehler beim Speichern der Config: " + e.getMessage());
+            System.err.println("[Spawnelytra] Error saving config: " + e.getMessage());
         }
     }
 
