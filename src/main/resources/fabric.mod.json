@@ -1,32 +1,23 @@
 {
   "schemaVersion": 1,
-  "id": "spawnelytra",
-  "version": "${version}",
-  "name": "SpawnElytra",
-  "description": "",
-  "authors": [],
+  "id": "spawn-elytra",
+  "version": "1.0.0",
+  "name": "Spawn-Elytra",
+  "description": "Allows players to fly and boost in the spawn area",
+  "authors": ["Skaimbauer"],
   "contact": {},
-  "license": "All-Rights-Reserved",
-  "icon": "assets/spawnelytra/icon.png",
+  "license": "MIT",
+  "icon": "img.png",
   "environment": "server",
   "entrypoints": {
-    "fabric-datagen": [
-      "Skaimbauer0401.client.SpawnelytraDataGenerator"
-    ],
     "main": [
       "Skaimbauer0401.Spawnelytra"
     ]
   },
-  "mixins": [
-    "spawnelytra.mixins.json",
-    {
-      "config": "spawnelytra.client.mixins.json",
-      "environment": "client"
-    }
-  ],
+  "mixins": [],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": ">=0.15.0",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "~1.21"
   }
 }
