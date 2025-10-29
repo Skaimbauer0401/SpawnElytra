@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "spawnelytra",
+  "version": "${version}",
+  "name": "SpawnElytra",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/spawnelytra/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "fabric-datagen": [
+      "Skaimbauer0401.client.SpawnelytraDataGenerator"
+    ],
+    "main": [
+      "Skaimbauer0401.Spawnelytra"
+    ]
+  },
+  "mixins": [
+    "spawnelytra.mixins.json",
+    {
+      "config": "spawnelytra.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
