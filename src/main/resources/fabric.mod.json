@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "spawn-elytra",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "name": "Spawn-Elytra",
   "description": "Allows players to fly and boost in the spawn area",
   "authors": ["Skaimbauer"],
@@ -16,8 +16,8 @@
   },
   "mixins": [],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=0.17.0",
     "fabric": "*",
-    "minecraft": "~1.21"
+    "minecraft": ">=1.21.9 <=1.21.10"
   }
 }
