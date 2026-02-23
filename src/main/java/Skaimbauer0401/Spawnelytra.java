@@ -41,7 +41,6 @@ public class Spawnelytra implements ModInitializer {
 
     private final List<MySaver> playerList = new ArrayList<>();
 
-
     @Override
     public void onInitialize() {
         ServerTickEvents.END_SERVER_TICK.register(this::onServerTick);
