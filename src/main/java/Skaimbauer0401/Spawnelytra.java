@@ -9,8 +9,10 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.BlockPosArgumentType;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 
 public class Spawnelytra implements ModInitializer {
@@ -41,15 +44,16 @@ public class Spawnelytra implements ModInitializer {
 
     private final List<MySaver> playerList = new ArrayList<>();
 
+
+
     @Override
     public void onInitialize() {
         ServerTickEvents.END_SERVER_TICK.register(this::onServerTick);
 
         loadConfig();
-
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("spawnelytra")
-                    .requires(source -> source.hasPermissionLevel(2)) // Nur für Ops
+                    .requires((Predicate<ServerCommandSource>) CommandManager.GAMEMASTERS_CHECK)
                     .then(CommandManager.literal("radius")
                             .then(CommandManager.argument("radius", IntegerArgumentType.integer(1, 1000))
                                     .executes(context -> {
@@ -199,7 +203,8 @@ public class Spawnelytra implements ModInitializer {
                     Vec3d boostVelocity = lookDirection.multiply(BOOST_MULTIPLIER);
 
                     playerSaver.getPlayer().setVelocity(boostVelocity);
-                    playerSaver.getPlayer().velocityModified = true;
+                    playerSaver.getPlayer().networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(playerSaver.getPlayer()));
+
 
                     playerSaver.setBoostable(false);
                 }
