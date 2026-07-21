@@ -8,19 +8,16 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.command.argument.BlockPosArgumentType;
-import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
-import net.minecraft.predicate.item.FireworkExplosionPredicate;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.GameMode;
-import net.minecraft.world.World;
-
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -51,43 +48,43 @@ public class Spawnelytra implements ModInitializer {
         ServerTickEvents.END_SERVER_TICK.register(this::onServerTick);
         loadConfig();
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-            dispatcher.register(CommandManager.literal("spawnelytra")
-                    .requires(CommandManager.requirePermissionLevel(CommandManager.GAMEMASTERS_CHECK))
-                    .then(CommandManager.literal("radius")
-                            .then(CommandManager.argument("radius", IntegerArgumentType.integer(1, 1000))
+            dispatcher.register(Commands.literal("spawnelytra")
+                    .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                    .then(Commands.literal("radius")
+                            .then(Commands.argument("radius", IntegerArgumentType.integer(1, 1000))
                                     .executes(context -> {
                                         int radius = IntegerArgumentType.getInteger(context, "radius");
                                         START_RADIUS = radius;
                                         saveConfig();
-                                        context.getSource().sendFeedback(
-                                                () -> Text.literal("§aStart-Radius set to:" + radius),
+                                        context.getSource().sendSuccess(
+                                                () -> Component.literal("§aStart-Radius set to:" + radius),
                                                 true
                                         );
                                         return 1;
                                     })
                             )
                     )
-                    .then(CommandManager.literal("booststrength")
-                            .then(CommandManager.argument("strength", DoubleArgumentType.doubleArg(0.01, 100.0))
+                    .then(Commands.literal("booststrength")
+                            .then(Commands.argument("strength", DoubleArgumentType.doubleArg(0.01, 100.0))
                                     .executes(context -> {
                                         double strength = DoubleArgumentType.getDouble(context, "strength");
                                         BOOST_MULTIPLIER = strength;
                                         saveConfig();
-                                        context.getSource().sendFeedback(
-                                                () -> Text.literal("§aBoost-Strength set to: " + strength + ""),
+                                        context.getSource().sendSuccess(
+                                                () -> Component.literal("§aBoost-Strength set to: " + strength + ""),
                                                 true
                                         );
                                         return 1;
                                     })
                             )
                     )
-                    .then(CommandManager.literal("center")
-                            .then(CommandManager.argument("position", BlockPosArgumentType.blockPos())
+                    .then(Commands.literal("center")
+                            .then(Commands.argument("position", BlockPosArgument.blockPos())
                                     .executes(context -> {
-                                        CENTER_POS = BlockPosArgumentType.getBlockPos(context, "position");
+                                        CENTER_POS = BlockPosArgument.getBlockPos(context, "position");
                                         saveConfig();
-                                        context.getSource().sendFeedback(
-                                                () -> Text.literal("§aCenter set to: " + CENTER_POS.toShortString()),
+                                        context.getSource().sendSuccess(
+                                                () -> Component.literal("§aCenter set to: " + CENTER_POS.toShortString()),
                                                 true
                                         );
                                         return 1;
@@ -97,26 +94,26 @@ public class Spawnelytra implements ModInitializer {
                             )
 
                     )
-                    .then(CommandManager.literal("default")
+                    .then(Commands.literal("default")
                             .executes(context -> {
                                 START_RADIUS = 30;
                                 BOOST_MULTIPLIER = 2.5;
                                 CENTER_POS = null;
                                 saveConfig();
-                                context.getSource().sendFeedback(
-                                        () -> Text.literal("§aSettings reset!"),
+                                context.getSource().sendSuccess(
+                                        () -> Component.literal("§aSettings reset!"),
                                         true
                                 );
                                 return 1;
                             })
                     )
-                    .then(CommandManager.literal("info")
+                    .then(Commands.literal("info")
                             .executes(context -> {
                                 String centerInfo = CENTER_POS != null ?
                                         CENTER_POS.getX() + ", " + CENTER_POS.getY() + ", " + CENTER_POS.getZ() :
                                         "World-Spawn";
-                                context.getSource().sendFeedback(
-                                        () -> Text.literal("§6=== Spawnelytra Settings ===\n" +
+                                context.getSource().sendSuccess(
+                                        () -> Component.literal("§6=== Spawnelytra Settings ===\n" +
                                                 "§eStart-Radius: §f" + START_RADIUS + "\n" +
                                                 "§eBoost-Strength: §f" + BOOST_MULTIPLIER + "\n" +
                                                 "§eCenter: §f" + centerInfo + "\n"),
@@ -130,14 +127,14 @@ public class Spawnelytra implements ModInitializer {
     }
 
     private void onServerTick(MinecraftServer server) {
-        if (server.getPlayerManager().getPlayerList().isEmpty()) {
+        if (server.getPlayerList().getPlayers().isEmpty()) {
             playerList.clear();
         } else {
-            for (ServerPlayerEntity serverPlayer : server.getPlayerManager().getPlayerList()) {
+            for (ServerPlayer serverPlayer : server.getPlayerList().getPlayers()) {
                 boolean found = false;
 
                 for (int j = 0; j < playerList.size(); j++) {
-                    if (serverPlayer.getUuid().equals(playerList.get(j).getPlayer().getUuid())) {
+                    if (serverPlayer.getUUID().equals(playerList.get(j).getPlayer().getUUID())) {
                         playerList.get(j).setPlayer(serverPlayer);
                         found = true;
                         break;
@@ -151,13 +148,13 @@ public class Spawnelytra implements ModInitializer {
         }
 
         for (MySaver playerSaver : playerList) {
-            World world = playerSaver.getPlayer().getEntityWorld();
-            BlockPos center = CENTER_POS != null ? CENTER_POS : world.getSpawnPoint().getPos();
+            Level world = playerSaver.getPlayer().level();
+            BlockPos center = CENTER_POS != null ? CENTER_POS : world.getRespawnData().pos();
 
-            double distance = playerSaver.getPlayer().getEntityPos().distanceTo(center.toCenterPos());
+            double distance = playerSaver.getPlayer().position().distanceTo(center.getCenter());
             boolean inSpawnRadius = distance <= START_RADIUS;
 
-            if (playerSaver.getPlayer().isOnGround()) {
+            if (playerSaver.getPlayer().onGround()) {
                 if (playerSaver.isFlying()) {
                     playerSaver.setFlying(false);
                     playerSaver.setGroundTicks(0);
@@ -176,9 +173,9 @@ public class Spawnelytra implements ModInitializer {
 
             } else {
 
-                if (playerSaver.getDoubleSpaceCounter() >= 4 && playerSaver.getPlayer().getPlayerInput().jump() && inSpawnRadius && playerSaver.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+                if (playerSaver.getDoubleSpaceCounter() >= 4 && playerSaver.getPlayer().getLastClientInput().jump() && inSpawnRadius && playerSaver.getPlayer().gameMode() == GameType.SURVIVAL) {
                     playerSaver.setDoubleSpaceCounter(0);
-                    playerSaver.getPlayer().startGliding();
+                    playerSaver.getPlayer().startFallFlying();
                     playerSaver.setFlying(true);
                     playerSaver.setBoostable(true);
                     playerSaver.setGroundTicks(LANDING_INVULNERABILITY_TICKS);
@@ -188,21 +185,21 @@ public class Spawnelytra implements ModInitializer {
 
             if (playerSaver.isFlying()) {
                 if (playerSaver.isBoostable()) {
-                    playerSaver.getPlayer().sendMessage(Text.literal("Press Space for Boost"), true);
+                    playerSaver.getPlayer().displayClientMessage(Component.literal("Press Space for Boost"), true);
                 } else {
-                    playerSaver.getPlayer().sendMessage(Text.literal("Boost already used"), true);
+                    playerSaver.getPlayer().displayClientMessage(Component.literal("Boost already used"), true);
                 }
-                playerSaver.getPlayer().startGliding();
+                playerSaver.getPlayer().startFallFlying();
                 playerSaver.setFlyingTicks(playerSaver.getFlyingTicks() + 1);
                 playerSaver.getPlayer().setInvulnerable(true);
 
-                if (playerSaver.isBoostable() && playerSaver.getPlayer().getPlayerInput().jump() && playerSaver.getFlyingTicks() >= 15) {
+                if (playerSaver.isBoostable() && playerSaver.getPlayer().getLastClientInput().jump() && playerSaver.getFlyingTicks() >= 15) {
 
-                    Vec3d lookDirection = playerSaver.getPlayer().getRotationVector();
-                    Vec3d boostVelocity = lookDirection.multiply(BOOST_MULTIPLIER);
+                    Vec3 lookDirection = playerSaver.getPlayer().getLookAngle();
+                    Vec3 boostVelocity = lookDirection.scale(BOOST_MULTIPLIER);
 
-                    playerSaver.getPlayer().setVelocity(boostVelocity);
-                    playerSaver.getPlayer().networkHandler.sendPacket(new EntityVelocityUpdateS2CPacket(playerSaver.getPlayer()));
+                    playerSaver.getPlayer().setDeltaMovement(boostVelocity);
+                    playerSaver.getPlayer().connection.send(new ClientboundSetEntityMotionPacket(playerSaver.getPlayer()));
 
 
                     playerSaver.setBoostable(false);
@@ -211,8 +208,8 @@ public class Spawnelytra implements ModInitializer {
 
             if (inSpawnRadius) {
                 playerSaver.getPlayer().setHealth(playerSaver.getPlayer().getMaxHealth());
-                playerSaver.getPlayer().getHungerManager().setFoodLevel(20);
-                playerSaver.getPlayer().getHungerManager().setSaturationLevel(20);
+                playerSaver.getPlayer().getFoodData().setFoodLevel(20);
+                playerSaver.getPlayer().getFoodData().setSaturation(20);
                 playerSaver.getPlayer().setInvulnerable(true);
             }
 

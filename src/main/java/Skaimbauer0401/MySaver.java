@@ -1,16 +1,16 @@
 package Skaimbauer0401;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class MySaver {
-    private ServerPlayerEntity player;
+    private ServerPlayer player;
     private int flyingTicks;
     private boolean boostable;
     private boolean flying;
     private int doubleSpaceCounter;
     private int groundTicks;
 
-    public MySaver(ServerPlayerEntity player, int flyingTicks, boolean boostable, boolean flying, int doubleSpaceCounter, int groundTicks) {
+    public MySaver(ServerPlayer player, int flyingTicks, boolean boostable, boolean flying, int doubleSpaceCounter, int groundTicks) {
         this.player = player;
         this.flyingTicks = flyingTicks;
         this.boostable = boostable;
@@ -19,11 +19,11 @@ public class MySaver {
         this.groundTicks = groundTicks;
     }
 
-    public ServerPlayerEntity getPlayer() {
+    public ServerPlayer getPlayer() {
         return player;
     }
 
-    public void setPlayer(ServerPlayerEntity player) {
+    public void setPlayer(ServerPlayer player) {
         this.player = player;
     }
 
