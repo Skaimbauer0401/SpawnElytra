@@ -35,10 +35,12 @@ from the [releases page](https://github.com/Skaimbauer0401/SpawnElytra/releases)
 
 | Minecraft | Mod version | Fabric Loader |
 | --- | --- | --- |
-| 26.2 | 1.2.0 | 0.19.3+ |
-| 26.1, 26.1.1, 26.1.2 | 1.1.0 | 0.19.3+ |
+| 26.2 | 1.2.1 | 0.19.3+ |
+| 26.1, 26.1.1, 26.1.2 | 1.1.1 | 0.19.3+ |
 | 1.21.11 | 1.0.3 | 0.18.4+ |
 | 1.21.9, 1.21.10 | 1.0.2 | 0.17.0+ |
+
+> Do not use 1.1.0 or 1.2.0 — they fail to load. Use 1.1.1 / 1.2.1 instead.
 
 This is a **server-side** mod. It does not need to be installed on clients.
 
