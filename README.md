@@ -28,8 +28,34 @@ All commands require OP permission level 2.
 ## Configuration
 Settings are automatically saved to `config/spawnelytra.json` and persist across server restarts.
 
+## Supported Minecraft versions
+
+Each Minecraft version line has its own release. Download the matching jar
+from the [releases page](https://github.com/Skaimbauer0401/SpawnElytra/releases).
+
+| Minecraft | Mod version | Fabric Loader |
+| --- | --- | --- |
+| 26.2 | 1.2.0 | 0.19.3+ |
+| 26.1, 26.1.1, 26.1.2 | 1.1.0 | 0.19.3+ |
+| 1.21.11 | 1.0.3 | 0.18.4+ |
+| 1.21.9, 1.21.10 | 1.0.2 | 0.17.0+ |
+
+This is a **server-side** mod. It does not need to be installed on clients.
+
 ## Installation
-Requires Fabric Loader and Fabric API
+1. Install Fabric Loader and Fabric API for your Minecraft version.
+2. Drop the matching jar from the table above into the server's `mods` folder.
+3. Restart the server.
+
+## Building from source
+
+Requires JDK 25 for Minecraft 26.1 and later (JDK 21 for the 1.21.x releases).
+
+```
+./gradlew build
+```
+
+The jar is written to `build/libs/`.
 
 ## How to Use
 1. Stand within the spawn radius

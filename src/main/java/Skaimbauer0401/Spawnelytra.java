@@ -151,7 +151,9 @@ public class Spawnelytra implements ModInitializer {
             Level world = playerSaver.getPlayer().level();
             BlockPos center = CENTER_POS != null ? CENTER_POS : world.getRespawnData().pos();
 
-            double distance = playerSaver.getPlayer().position().distanceTo(center.getCenter());
+            // Vec3.atCenterOf rather than BlockPos.getCenter: the latter was
+            // removed in 26.2, while this form compiles against 26.1 and 26.2 alike.
+            double distance = playerSaver.getPlayer().position().distanceTo(Vec3.atCenterOf(center));
             boolean inSpawnRadius = distance <= START_RADIUS;
 
             if (playerSaver.getPlayer().onGround()) {
