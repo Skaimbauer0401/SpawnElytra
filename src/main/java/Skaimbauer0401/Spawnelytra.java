@@ -185,9 +185,9 @@ public class Spawnelytra implements ModInitializer {
 
             if (playerSaver.isFlying()) {
                 if (playerSaver.isBoostable()) {
-                    playerSaver.getPlayer().displayClientMessage(Component.literal("Press Space for Boost"), true);
+                    playerSaver.getPlayer().sendOverlayMessage(Component.literal("Press Space for Boost"));
                 } else {
-                    playerSaver.getPlayer().displayClientMessage(Component.literal("Boost already used"), true);
+                    playerSaver.getPlayer().sendOverlayMessage(Component.literal("Boost already used"));
                 }
                 playerSaver.getPlayer().startFallFlying();
                 playerSaver.setFlyingTicks(playerSaver.getFlyingTicks() + 1);
