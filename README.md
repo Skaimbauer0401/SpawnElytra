@@ -14,7 +14,7 @@ The default center is the world spawn.
 ## Commands
 All commands require OP permission level 2.
 
-- `/spawnelytra spawnradius <radius>` - Set spawn radius (1-1000)
+- `/spawnelytra radius <radius>` - Set spawn radius (1-1000)
 - `/spawnelytra booststrength <strength>` - Set boost strength (0.01-100.0)
 - `/spawnelytra center <x> <y> <z>` - Set center to specific coordinates
 - `/spawnelytra default` - Reset all settings to default
@@ -36,4 +36,3 @@ Requires Fabric Loader and Fabric API
 2. Jump and double-tap spacebar to start gliding
 3. Press spacebar again while flying to boost in the direction you're looking
 4. Land safely with 20 ticks of invulnerability protection
-```
