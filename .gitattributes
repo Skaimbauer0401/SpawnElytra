@@ -1,0 +1,14 @@
+# Normalize text files to LF in the repository.
+* text=auto eol=lf
+
+# gradlew is executed by /bin/sh on Linux and macOS. CRLF line endings
+# break it with "bad interpreter", so it must stay LF regardless of the
+# contributor's core.autocrlf setting.
+gradlew text eol=lf
+
+# Windows batch files must keep CRLF.
+*.bat text eol=crlf
+
+# Binary files: never touch line endings.
+*.jar binary
+*.png binary
