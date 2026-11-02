@@ -167,10 +167,10 @@ public class Spawnelytra implements ModInitializer {
                 playerSaver.setBoostable(false);
 
                 if (playerSaver.getGroundTicks() < LANDING_INVULNERABILITY_TICKS) {
-                    playerSaver.getPlayer().setInvulnerable(true);
+                    playerSaver.getPlayer().setPermanentlyInvulnerable(true);
                     playerSaver.setGroundTicks(playerSaver.getGroundTicks() + 1);
                 } else {
-                    playerSaver.getPlayer().setInvulnerable(false);
+                    playerSaver.getPlayer().setPermanentlyInvulnerable(false);
                 }
 
             } else {
@@ -193,7 +193,7 @@ public class Spawnelytra implements ModInitializer {
                 }
                 playerSaver.getPlayer().startFallFlying();
                 playerSaver.setFlyingTicks(playerSaver.getFlyingTicks() + 1);
-                playerSaver.getPlayer().setInvulnerable(true);
+                playerSaver.getPlayer().setPermanentlyInvulnerable(true);
 
                 if (playerSaver.isBoostable() && playerSaver.getPlayer().getLastClientInput().jump() && playerSaver.getFlyingTicks() >= 15) {
 
@@ -212,7 +212,7 @@ public class Spawnelytra implements ModInitializer {
                 playerSaver.getPlayer().setHealth(playerSaver.getPlayer().getMaxHealth());
                 playerSaver.getPlayer().getFoodData().setFoodLevel(20);
                 playerSaver.getPlayer().getFoodData().setSaturation(20);
-                playerSaver.getPlayer().setInvulnerable(true);
+                playerSaver.getPlayer().setPermanentlyInvulnerable(true);
             }
 
         }

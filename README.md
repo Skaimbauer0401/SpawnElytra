@@ -35,6 +35,7 @@ from the [releases page](https://github.com/Skaimbauer0401/SpawnElytra/releases)
 
 | Minecraft | Mod version | Fabric Loader |
 | --- | --- | --- |
+| 26.3 | 1.3.0 | 0.20.1+ |
 | 26.2 | 1.2.1 | 0.19.3+ |
 | 26.1, 26.1.1, 26.1.2 | 1.1.1 | 0.19.3+ |
 | 1.21.11 | 1.0.3 | 0.18.4+ |
